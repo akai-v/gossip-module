@@ -14,7 +14,7 @@ export class StudyManager {
     }
 
     async canStudy(message: UserMessage) {
-        return !message.Sender.IsClientUser && message.AttachmentList.length < 1;
+        return message.AttachmentList.length < 1;
     }
 
     async canResponse(message: UserMessage) {

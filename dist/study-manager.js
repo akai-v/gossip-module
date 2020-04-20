@@ -6,7 +6,7 @@ class StudyManager {
         this.dbEntry = dbEntry;
     }
     async canStudy(message) {
-        return !message.Sender.IsClientUser && message.AttachmentList.length < 1;
+        return message.AttachmentList.length < 1;
     }
     async canResponse(message) {
         return this.getChannelResponseFlag(message.Channel);

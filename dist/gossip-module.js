@@ -28,11 +28,14 @@ class GossipModule extends core_1.BotModule {
     async unloadModule() {
     }
     async onMessage(e) {
-        if (!await (this.studyManager.canStudy(e.Message)))
+        await this.processGossip(e.Message);
+    }
+    async processGossip(message, processClient = false) {
+        if ((processClient || !message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message)))
             return;
-        let text = e.Message.Text;
-        let lastText = this.lastMessageMap.get(e.Message.Channel);
-        this.lastMessageMap.set(e.Message.Channel, text);
+        let text = message.Text;
+        let lastText = this.lastMessageMap.get(message.Channel);
+        this.lastMessageMap.set(message.Channel, text);
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
         if (!lastText)
@@ -47,6 +50,12 @@ class GossipModule extends core_1.BotModule {
         let newLastChatRefCount = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
         await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
         let chatKey = await this.studyManager.getChatKeyByHash(textHash);
+        if (!chatKey) {
+            let wordList = text.split(' ');
+            if (wordList.length < 2)
+                return;
+            chatKey = await this.studyManager.getChatKey(wordList[Math.floor(wordList.length / 2)]);
+        }
         if (!chatKey)
             return;
         let connectionKeys = Object.keys(chatKey.connection);
@@ -62,20 +71,23 @@ class GossipModule extends core_1.BotModule {
             let newStudyKeyRefCount = (await this.studyManager.getChatKeyHashConnectionRefCount(textHash, studyKey)) + 1;
             await this.studyManager.updateChatKeyHashConnectionRefCount(textHash, studyKey, newStudyKeyRefCount);
         }
-        if (!(await this.studyManager.getChannelResponseFlag(e.Message.Channel)))
+        if (!(await this.studyManager.getChannelResponseFlag(message.Channel)))
             return;
         let totalKeyRefCount = 0;
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
-        let ratio = Math.min((1 - connectionKeys.length / totalKeyRefCount) * 3, 1);
+        let ratio = Math.min((1 - connectionKeys.length / totalKeyRefCount) * 3, 0.83);
         if (Math.random() >= ratio)
             return;
         let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
         if (!targetChatKey)
             return;
-        e.Message.Channel.sendText(targetChatKey.text);
+        let sentList = await message.Channel.sendText(targetChatKey.text);
+        for (let message of sentList) {
+            await this.processGossip(message, true);
+        }
     }
 }
 exports.GossipModule = GossipModule;
