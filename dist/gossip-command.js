@@ -66,7 +66,7 @@ class PercentCommand {
             keyTotal += (connection[key] || 0);
         }
         let ratio = (keyTotal / (await this.studyManager.getTotalMessage())) * 100;
-        let percent = Math.min((1 - Object.keys(connection).length / keyTotal) * 2.7, 0.8) * 100;
+        let percent = Math.max(Math.min((Object.keys(connection).length / keyTotal) * 0.8, 0.8), 0.17) * 100;
         str += `\n\n전체 중 비율 ${ratio.toFixed(2)} %\n\n응답률: ${percent.toFixed(2)} %`;
         await e.Channel.sendText(str);
     }
