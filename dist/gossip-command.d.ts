@@ -16,3 +16,11 @@ export declare class InfoCommand implements CommandInfo {
     get Description(): string;
     onCommand(e: BotCommandEvent, logger: ModuleLogger): Promise<void>;
 }
+export declare class PercentCommand implements CommandInfo {
+    private studyManager;
+    constructor(studyManager: StudyManager);
+    get CommandList(): string[];
+    get Usage(): string;
+    get Description(): string;
+    onCommand(e: BotCommandEvent, logger: ModuleLogger): Promise<void>;
+}
