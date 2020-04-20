@@ -104,7 +104,7 @@ export class GossipModule extends BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
 
-        let ratio = (1 - connectionKeys.length / totalKeyRefCount) * 0.5;
+        let ratio = Math.min((1 - connectionKeys.length / totalKeyRefCount) * 5, 1);
         
         if (Math.random() >= ratio) return;
 
