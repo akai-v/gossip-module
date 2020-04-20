@@ -31,7 +31,7 @@ class GossipModule extends core_1.BotModule {
         await this.processGossip(e.Message);
     }
     async processGossip(message, processClient = false) {
-        if ((processClient || !message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message)))
+        if ((!processClient || !message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message)))
             return;
         let text = message.Text;
         let lastText = this.lastMessageMap.get(message.Channel);
@@ -77,7 +77,7 @@ class GossipModule extends core_1.BotModule {
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
-        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 2.7, 0.8);
+        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 3.2, 0.8);
         if (Math.random() >= ratio)
             return;
         let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
