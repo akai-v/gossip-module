@@ -66,8 +66,8 @@ class GossipModule extends core_1.BotModule {
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
-        let ratio = totalKeyRefCount / total;
-        if (Math.random() >= Math.sqrt(ratio + Math.sin(ratio * 20) * 0.1))
+        let ratio = (1 - connectionKeys.length / totalKeyRefCount) * 0.5;
+        if (Math.random() >= ratio)
             return;
         let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
