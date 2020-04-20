@@ -55,7 +55,7 @@ export class GossipModule extends BotModule {
     }
 
     protected async processGossip(message: UserMessage, processClient: boolean = false) {
-        if (!processClient && message.Sender.IsClientUser && !await (this.studyManager.canStudy(message))) return;
+        if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message))) return;
 
         let text = message.Text;
         let lastText = this.lastMessageMap.get(message.Channel);
@@ -118,7 +118,7 @@ export class GossipModule extends BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
 
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * 0.8, 0.8), 0.17);
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * 0.8, 0.7), 0.17);
         
         if (Math.random() >= ratio) return;
 
