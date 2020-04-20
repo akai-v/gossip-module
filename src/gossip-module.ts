@@ -131,7 +131,7 @@ export class GossipModule extends BotModule {
 
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text) continue;
-            await this.processGossip(sentMessage, true, 1.08);
+            await this.processGossip(sentMessage, true, 1.1);
             break;
         }
     }
