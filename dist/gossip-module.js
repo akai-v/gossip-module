@@ -62,6 +62,8 @@ class GossipModule extends core_1.BotModule {
             let newStudyKeyRefCount = (await this.studyManager.getChatKeyHashConnectionRefCount(textHash, studyKey)) + 1;
             await this.studyManager.updateChatKeyHashConnectionRefCount(textHash, studyKey, newStudyKeyRefCount);
         }
+        if (!(await this.studyManager.getChannelResponseFlag(e.Message.Channel)))
+            return;
         let totalKeyRefCount = 0;
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;

@@ -98,6 +98,8 @@ export class GossipModule extends BotModule {
             await this.studyManager.updateChatKeyHashConnectionRefCount(textHash, studyKey, newStudyKeyRefCount);
         }
 
+        if (!(await this.studyManager.getChannelResponseFlag(e.Message.Channel))) return;
+
         let totalKeyRefCount = 0;
 
         for (let connectionKey of connectionKeys) {
