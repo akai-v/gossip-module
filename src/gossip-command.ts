@@ -82,20 +82,20 @@ export class PercentCommand implements CommandInfo {
             await e.Channel.sendText(`사용법: ${this.Usage}`);
             return;
         }
-        
+
         let chatkey = await this.studyManager.getChatKey(e.RawArgument);
 
         if (!chatkey) await e.Channel.sendText(`${e.RawArgument} 는 학습되지 않았습니다`);
 
-        let str = `${chatkey} 의 학습정보\n\n`;
+        let str = `${e.RawArgument} 의 학습정보\n\n`;
 
         let connection = chatkey!.connection;
 
         let keyTotal = 0;
 
         for (let key in connection) {
-            str += `${key}: ${connection[key]}`;
-            keyTotal += connection[key];
+            str += `${key}: ${connection[key]}\n`;
+            keyTotal += (connection[key] || 0);
         }
 
         let ratio = (keyTotal / (await this.studyManager.getTotalMessage())) * 100;
