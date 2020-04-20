@@ -11,6 +11,7 @@ class GossipModule extends core_1.BotModule {
         this.studyManager = new study_manager_1.StudyManager(studyDB);
         this.CommandManager.addCommand(new gossip_command_1.ToggleCommand(this.studyManager));
         this.CommandManager.addCommand(new gossip_command_1.InfoCommand(this.studyManager));
+        this.CommandManager.addCommand(new gossip_command_1.PercentCommand(this.studyManager));
         this.on('message', this.onMessage.bind(this));
     }
     get Name() {

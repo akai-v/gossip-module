@@ -52,6 +52,10 @@ class PercentCommand {
         return '헛소리 학습 정보';
     }
     async onCommand(e, logger) {
+        if (e.RawArgument.length < 1) {
+            await e.Channel.sendText(`사용법: ${this.Usage}`);
+            return;
+        }
         let chatkey = await this.studyManager.getChatKey(e.RawArgument);
         if (!chatkey)
             await e.Channel.sendText(`${e.RawArgument} 는 학습되지 않았습니다`);

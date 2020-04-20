@@ -1,5 +1,5 @@
 import { BotModule, DatabaseEntry, BotMessageEvent, Channel } from "@akaiv/core";
-import { ToggleCommand, InfoCommand } from "./gossip-command";
+import { ToggleCommand, InfoCommand, PercentCommand } from "./gossip-command";
 import { StudyManager } from "./study-manager";
 import * as Crypto from "crypto";
 

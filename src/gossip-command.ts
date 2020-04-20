@@ -78,6 +78,11 @@ export class PercentCommand implements CommandInfo {
     }
 
     async onCommand(e: BotCommandEvent, logger: ModuleLogger) {
+        if (e.RawArgument.length < 1) {
+            await e.Channel.sendText(`사용법: ${this.Usage}`);
+            return;
+        }
+        
         let chatkey = await this.studyManager.getChatKey(e.RawArgument);
 
         if (!chatkey) await e.Channel.sendText(`${e.RawArgument} 는 학습되지 않았습니다`);
