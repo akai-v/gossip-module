@@ -1,5 +1,5 @@
 {
-  "name": "${moduleName}-module",
+  "name": "gossip-module",
   "version": "1.0.0",
   "description": "write description here",
   "main": "dist/index.js",
