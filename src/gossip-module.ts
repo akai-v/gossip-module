@@ -118,7 +118,7 @@ export class GossipModule extends BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
 
-        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 3, 0.9);
+        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 2.7, 0.8);
         
         if (Math.random() >= ratio) return;
 
@@ -130,7 +130,9 @@ export class GossipModule extends BotModule {
         let sentList = await message.Channel.sendText(targetChatKey.text);
 
         for (let message of sentList) {
+            if (message.AttachmentList.length > 0 || message.Text !== targetChatKey.text) continue;
             await this.processGossip(message, true);
+            break;
         }
     }
 
