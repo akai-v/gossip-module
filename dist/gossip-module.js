@@ -77,7 +77,7 @@ class GossipModule extends core_1.BotModule {
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
-        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 3.2, 0.8);
+        let ratio = Math.min((connectionKeys.length / totalKeyRefCount) * 2.5, 0.7);
         if (Math.random() >= ratio)
             return;
         let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
@@ -85,10 +85,10 @@ class GossipModule extends core_1.BotModule {
         if (!targetChatKey)
             return;
         let sentList = await message.Channel.sendText(targetChatKey.text);
-        for (let message of sentList) {
-            if (message.AttachmentList.length > 0 || message.Text !== targetChatKey.text)
+        for (let sentMessage of sentList) {
+            if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text)
                 continue;
-            await this.processGossip(message, true);
+            await this.processGossip(sentMessage, true);
             break;
         }
     }
