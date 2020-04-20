@@ -25,6 +25,7 @@ export class GossipModule extends BotModule {
 
         this.CommandManager.addCommand(new ToggleCommand(this.studyManager));
         this.CommandManager.addCommand(new InfoCommand(this.studyManager));
+        this.CommandManager.addCommand(new PercentCommand(this.studyManager));
 
         this.on('message', this.onMessage.bind(this));
     }
