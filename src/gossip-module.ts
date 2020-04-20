@@ -54,7 +54,7 @@ export class GossipModule extends BotModule {
         await this.processGossip(e.Message);
     }
 
-    protected async processGossip(message: UserMessage, processClient: boolean = false) {
+    protected async processGossip(message: UserMessage, processClient: boolean = false, multiplier: number = 1) {
         if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message))) return;
 
         let text = message.Text;
@@ -118,7 +118,7 @@ export class GossipModule extends BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
 
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.74, 0.7), 0.17);
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier, 0.7), 0.17);
         
         if (Math.random() >= ratio) return;
 
@@ -131,7 +131,7 @@ export class GossipModule extends BotModule {
 
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text) continue;
-            await this.processGossip(sentMessage, true);
+            await this.processGossip(sentMessage, true, 1.08);
             break;
         }
     }

@@ -98,7 +98,7 @@ export class PercentCommand implements CommandInfo {
         }
 
         let ratio = (keyTotal / (await this.studyManager.getTotalMessage())) * 100;
-        let percent = Math.max(Math.min((Object.keys(connection).length / keyTotal) * Math.min(Object.keys(connection).length / 3, 1) * 0.74, 0.7), 0.17) * 100;
+        let percent = Math.max(Math.min((Object.keys(connection).length / keyTotal) * Math.min(Object.keys(connection).length / 3, 1) * 0.72, 0.7), 0.17) * 100;
 
         str += `\n\n전체 중 비율 ${ratio.toFixed(2)} %\n\n응답률: ${percent.toFixed(2)} %`;
 
