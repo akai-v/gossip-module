@@ -84,7 +84,7 @@ export class GossipModule extends BotModule {
         let connectionKeys = Object.keys(chatKey.connection);
         if (connectionKeys.length < 1) return;
 
-        if (random < 1024) { // LEARN SOMETHING FROM AFTER TREE
+        if (random < 10240) { // LEARN SOMETHING FROM AFTER TREE
             let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
             let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
 
@@ -96,8 +96,6 @@ export class GossipModule extends BotModule {
             let newStudyKeyRefCount = (await this.studyManager.getChatKeyHashConnectionRefCount(textHash, studyKey)) + 1;
             await this.studyManager.updateChatKeyHashConnectionRefCount(textHash, studyKey, newStudyKeyRefCount);
         }
-
-        if (random > 32767) return;
 
         let totalKeyRefCount = 0;
 
