@@ -31,7 +31,7 @@ class GossipModule extends core_1.BotModule {
         await this.processGossip(e.Message);
     }
     async processGossip(message, processClient = false) {
-        if ((!processClient || !message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message)))
+        if ((!processClient || message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message)))
             return;
         let text = message.Text;
         let lastText = this.lastMessageMap.get(message.Channel);

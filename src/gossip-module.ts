@@ -55,7 +55,7 @@ export class GossipModule extends BotModule {
     }
 
     protected async processGossip(message: UserMessage, processClient: boolean = false) {
-        if ((!processClient || !message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message))) return;
+        if ((!processClient || message.Sender.IsClientUser) && !await (this.studyManager.canStudy(message))) return;
 
         let text = message.Text;
         let lastText = this.lastMessageMap.get(message.Channel);
