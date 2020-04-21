@@ -94,6 +94,7 @@ class GossipModule extends core_1.BotModule {
             }
             i += weight;
         }
+        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
         if (targetKey === '')
             return;
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
