@@ -126,7 +126,27 @@ export class GossipModule extends BotModule {
         
         if (Math.random() >= ratio) return;
 
-        let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
+        let targetArea = Math.floor((random / 65535) * totalKeyRefCount);
+
+        let targetKey: string = '';
+
+        if (connectionKeys.length < 1) return;
+        
+        let i = 0;
+        let weight = 0;
+        for (let connectionKey of connectionKeys) {
+            weight = chatKey.connection[connectionKey] || 0;
+
+            if (targetArea >= i && targetArea < i + weight) {
+                targetKey = connectionKey;
+                break;
+            }
+
+            i += weight;
+        }
+
+        if (targetKey === '') return;
+        
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
 
         if (!targetChatKey) return;
