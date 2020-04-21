@@ -61,10 +61,10 @@ export class GossipModule extends BotModule {
         let lastMessage = this.lastMessageMap.get(message.Channel);
         this.lastMessageMap.set(message.Channel, message);
 
+        if (!lastMessage) return;
+
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
-
-        if (!lastMessage) return;
 
         let lastText = lastMessage.Text;
 
@@ -79,8 +79,11 @@ export class GossipModule extends BotModule {
             this.studyManager.setChatKey(this.studyManager.createNewChatKey(lastText));
         }
 
-        let newLastChatRefCount: number = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
-        await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
+        
+        if (lastMessage.Text !== message.Text || lastMessage.Text === message.Text && Math.random() < 0.3) {
+            let newLastChatRefCount: number = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
+            await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
+        }
 
 
 

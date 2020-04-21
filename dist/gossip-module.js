@@ -36,10 +36,10 @@ class GossipModule extends core_1.BotModule {
         let text = message.Text;
         let lastMessage = this.lastMessageMap.get(message.Channel);
         this.lastMessageMap.set(message.Channel, message);
-        let total = await this.studyManager.getTotalMessage();
-        await this.studyManager.setTotalMessage(total + 1);
         if (!lastMessage)
             return;
+        let total = await this.studyManager.getTotalMessage();
+        await this.studyManager.setTotalMessage(total + 1);
         let lastText = lastMessage.Text;
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
@@ -48,8 +48,10 @@ class GossipModule extends core_1.BotModule {
         if (!lastChatKey) {
             this.studyManager.setChatKey(this.studyManager.createNewChatKey(lastText));
         }
-        let newLastChatRefCount = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
-        await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
+        if (lastMessage.Text !== message.Text || lastMessage.Text === message.Text && Math.random() < 0.3) {
+            let newLastChatRefCount = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
+            await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
+        }
         let chatKey = await this.studyManager.getChatKeyByHash(textHash);
         if (!chatKey) {
             let wordList = text.split(' ');
