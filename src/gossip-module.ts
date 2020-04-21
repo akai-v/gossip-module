@@ -1,7 +1,9 @@
-import { BotModule, DatabaseEntry, BotMessageEvent, Channel, UserMessage } from "@akaiv/core";
+import { BotModule, DatabaseEntry, BotMessageEvent, Channel, UserMessage, AttachmentTemplate, TemplateAttachment, AttachmentType } from "@akaiv/core";
 import { ToggleCommand, InfoCommand, PercentCommand } from "./gossip-command";
 import { StudyManager } from "./study-manager";
 import * as Crypto from "crypto";
+import * as File from "fs";
+import { join } from "path";
 
 /*
  * Created on Sat Oct 26 2019
@@ -11,9 +13,16 @@ import * as Crypto from "crypto";
 
 export class GossipModule extends BotModule {
 
+    public static readonly SORRY_FOR_THE_INCONVENIENCE = join(__dirname, '..', 'resources', 'forbidden.png');
+
     private studyManager: StudyManager;
 
     private lastMessageMap: WeakMap<Channel, UserMessage>;
+    private notifyMap: WeakMap<Channel, boolean>;
+
+    private urlRegex = /(http(s)?:\/\/?\/?[^\s]+)/g;
+
+    public sorryForTheInconvenienceImg: Buffer | null;
 
     constructor({ studyDB }: {
         studyDB: DatabaseEntry
@@ -21,13 +30,22 @@ export class GossipModule extends BotModule {
         super();
 
         this.lastMessageMap = new WeakMap();
+        this.notifyMap = new WeakMap();
         this.studyManager = new StudyManager(studyDB);
+
+        this.sorryForTheInconvenienceImg = null;
 
         this.CommandManager.addCommand(new ToggleCommand(this.studyManager));
         this.CommandManager.addCommand(new InfoCommand(this.studyManager));
         this.CommandManager.addCommand(new PercentCommand(this.studyManager));
 
         this.on('message', this.onMessage.bind(this));
+
+        File.readFile(GossipModule.SORRY_FOR_THE_INCONVENIENCE, (e, data) => {
+            if (e) return;
+
+            this.sorryForTheInconvenienceImg = data;
+        });
     }
 
     get Name() {
@@ -152,7 +170,16 @@ export class GossipModule extends BotModule {
 
         if (!targetChatKey) return;
 
-        let sentList = await message.Channel.sendText(targetChatKey.text);
+        let nonSensitiveText = targetChatKey.text.replace(this.urlRegex, ' [삐] ').trim();
+
+        if (targetChatKey.text !== nonSensitiveText && !this.notifyMap.has(message.Channel) && this.sorryForTheInconvenienceImg) {
+            message.Channel.sendRichTemplate(new AttachmentTemplate('* 민감한 내용이 검열되었습니다.', new TemplateAttachment(AttachmentType.IMAGE, 'sad.png', this.sorryForTheInconvenienceImg)));
+
+            this.notifyMap.set(message.Channel, true);
+        }
+
+
+        let sentList = await message.Channel.sendText(nonSensitiveText);
 
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text) continue;

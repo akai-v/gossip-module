@@ -4,15 +4,25 @@ const core_1 = require("@akaiv/core");
 const gossip_command_1 = require("./gossip-command");
 const study_manager_1 = require("./study-manager");
 const Crypto = require("crypto");
+const File = require("fs");
+const path_1 = require("path");
 class GossipModule extends core_1.BotModule {
     constructor({ studyDB }) {
         super();
+        this.urlRegex = /(http(s)?:\/\/?\/?[^\s]+)/g;
         this.lastMessageMap = new WeakMap();
+        this.notifyMap = new WeakMap();
         this.studyManager = new study_manager_1.StudyManager(studyDB);
+        this.sorryForTheInconvenienceImg = null;
         this.CommandManager.addCommand(new gossip_command_1.ToggleCommand(this.studyManager));
         this.CommandManager.addCommand(new gossip_command_1.InfoCommand(this.studyManager));
         this.CommandManager.addCommand(new gossip_command_1.PercentCommand(this.studyManager));
         this.on('message', this.onMessage.bind(this));
+        File.readFile(GossipModule.SORRY_FOR_THE_INCONVENIENCE, (e, data) => {
+            if (e)
+                return;
+            this.sorryForTheInconvenienceImg = data;
+        });
     }
     get Name() {
         return 'Gossip';
@@ -101,7 +111,12 @@ class GossipModule extends core_1.BotModule {
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
         if (!targetChatKey)
             return;
-        let sentList = await message.Channel.sendText(targetChatKey.text);
+        let nonSensitiveText = targetChatKey.text.replace(this.urlRegex, ' [삐] ').trim();
+        if (targetChatKey.text !== nonSensitiveText && !this.notifyMap.has(message.Channel) && this.sorryForTheInconvenienceImg) {
+            message.Channel.sendRichTemplate(new core_1.AttachmentTemplate('* 민감한 내용이 검열되었습니다.', new core_1.TemplateAttachment(core_1.AttachmentType.IMAGE, 'sad.png', this.sorryForTheInconvenienceImg)));
+            this.notifyMap.set(message.Channel, true);
+        }
+        let sentList = await message.Channel.sendText(nonSensitiveText);
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text)
                 continue;
@@ -111,4 +126,5 @@ class GossipModule extends core_1.BotModule {
     }
 }
 exports.GossipModule = GossipModule;
+GossipModule.SORRY_FOR_THE_INCONVENIENCE = path_1.join(__dirname, '..', 'resources', 'forbidden.png');
 //# sourceMappingURL=gossip-module.js.map
