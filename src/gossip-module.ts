@@ -143,7 +143,7 @@ export class GossipModule extends BotModule {
             i += weight;
         }
 
-        console.log('targetKey: ' + targetKey);
+        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
 
         if (targetKey === '') return;
         
