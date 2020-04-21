@@ -43,7 +43,7 @@ class GossipModule extends core_1.BotModule {
         let lastText = lastMessage.Text;
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
-        let random = Crypto.randomBytes(2).readInt16LE(0);
+        let random = Crypto.randomBytes(2).readUInt16LE(0);
         let lastChatKey = await this.studyManager.getChatKeyByHash(lastTextHash);
         if (!lastChatKey) {
             this.studyManager.setChatKey(this.studyManager.createNewChatKey(lastText));
@@ -94,7 +94,6 @@ class GossipModule extends core_1.BotModule {
             }
             i += weight;
         }
-        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
         if (targetKey === '')
             return;
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);

@@ -71,7 +71,7 @@ export class GossipModule extends BotModule {
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
 
-        let random: number = Crypto.randomBytes(2).readInt16LE(0); // 0 - 65535
+        let random: number = Crypto.randomBytes(2).readUInt16LE(0); // 0 - 65535
 
         let lastChatKey = await this.studyManager.getChatKeyByHash(lastTextHash);
 
@@ -142,8 +142,6 @@ export class GossipModule extends BotModule {
 
             i += weight;
         }
-
-        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
 
         if (targetKey === '') return;
         
