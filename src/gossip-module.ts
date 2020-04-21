@@ -13,7 +13,7 @@ export class GossipModule extends BotModule {
 
     private studyManager: StudyManager;
 
-    private lastMessageMap: WeakMap<Channel, string>;
+    private lastMessageMap: WeakMap<Channel, UserMessage>;
 
     constructor({ studyDB }: {
         studyDB: DatabaseEntry
@@ -58,13 +58,15 @@ export class GossipModule extends BotModule {
         if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message))) return;
 
         let text = message.Text;
-        let lastText = this.lastMessageMap.get(message.Channel);
-        this.lastMessageMap.set(message.Channel, text);
+        let lastMessage = this.lastMessageMap.get(message.Channel);
+        this.lastMessageMap.set(message.Channel, message);
 
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
 
-        if (!lastText) return;
+        if (!lastMessage) return;
+
+        let lastText = lastMessage.Text;
 
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
@@ -118,7 +120,9 @@ export class GossipModule extends BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
 
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier, 0.7), 0.17);
+        let offset = message.Timestamp - lastMessage.Timestamp;
+
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 3700), 0.7), 0.17);
         
         if (Math.random() >= ratio) return;
 

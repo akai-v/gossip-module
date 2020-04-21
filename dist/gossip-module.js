@@ -34,12 +34,13 @@ class GossipModule extends core_1.BotModule {
         if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message)))
             return;
         let text = message.Text;
-        let lastText = this.lastMessageMap.get(message.Channel);
-        this.lastMessageMap.set(message.Channel, text);
+        let lastMessage = this.lastMessageMap.get(message.Channel);
+        this.lastMessageMap.set(message.Channel, message);
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
-        if (!lastText)
+        if (!lastMessage)
             return;
+        let lastText = lastMessage.Text;
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
         let random = Crypto.randomBytes(2).readInt16LE(0);
@@ -77,7 +78,8 @@ class GossipModule extends core_1.BotModule {
         for (let connectionKey of connectionKeys) {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier, 0.7), 0.17);
+        let offset = message.Timestamp - lastMessage.Timestamp;
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 3700), 0.7), 0.17);
         if (Math.random() >= ratio)
             return;
         let targetKey = connectionKeys[Math.min(Math.floor(connectionKeys.length * Math.random()), connectionKeys.length - 1)];
