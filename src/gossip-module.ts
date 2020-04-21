@@ -129,8 +129,6 @@ export class GossipModule extends BotModule {
         let targetArea = Math.floor((random / 65535) * totalKeyRefCount);
 
         let targetKey: string = '';
-
-        if (connectionKeys.length < 1) return;
         
         let i = 0;
         let weight = 0;
@@ -144,6 +142,8 @@ export class GossipModule extends BotModule {
 
             i += weight;
         }
+
+        console.log('targetKey: ' + targetKey);
 
         if (targetKey === '') return;
         

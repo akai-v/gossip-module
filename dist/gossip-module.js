@@ -84,8 +84,6 @@ class GossipModule extends core_1.BotModule {
             return;
         let targetArea = Math.floor((random / 65535) * totalKeyRefCount);
         let targetKey = '';
-        if (connectionKeys.length < 1)
-            return;
         let i = 0;
         let weight = 0;
         for (let connectionKey of connectionKeys) {
@@ -96,6 +94,7 @@ class GossipModule extends core_1.BotModule {
             }
             i += weight;
         }
+        console.log('targetKey: ' + targetKey);
         if (targetKey === '')
             return;
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);
