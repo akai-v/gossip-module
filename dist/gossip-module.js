@@ -79,7 +79,7 @@ class GossipModule extends core_1.BotModule {
             totalKeyRefCount += chatKey.connection[connectionKey] || 0;
         }
         let offset = message.Timestamp - lastMessage.Timestamp;
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 3700), 0.7), 0.17);
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 2800), 0.7), 0.17);
         if (Math.random() >= ratio)
             return;
         let targetArea = Math.floor((random / 65535) * totalKeyRefCount);
@@ -94,7 +94,6 @@ class GossipModule extends core_1.BotModule {
             }
             i += weight;
         }
-        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
         if (targetKey === '')
             return;
         let targetChatKey = await this.studyManager.getChatKeyByHash(targetKey);

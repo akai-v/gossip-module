@@ -122,7 +122,7 @@ export class GossipModule extends BotModule {
 
         let offset = message.Timestamp - lastMessage.Timestamp;
 
-        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 3700), 0.7), 0.17);
+        let ratio = Math.max(Math.min((connectionKeys.length / totalKeyRefCount) * Math.min(connectionKeys.length / 3, 1) * 0.72 * multiplier * (offset / 2800), 0.7), 0.17);
         
         if (Math.random() >= ratio) return;
 
@@ -142,8 +142,6 @@ export class GossipModule extends BotModule {
 
             i += weight;
         }
-
-        console.log('targetKey: ' + targetKey + '\n' + 'targetArea: ' + targetArea);
 
         if (targetKey === '') return;
         
