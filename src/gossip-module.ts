@@ -69,6 +69,8 @@ export class GossipModule extends BotModule {
     }
 
     protected async onMessage(e: BotMessageEvent) {
+        if (e.IsCommand) return;
+        
         await this.processGossip(e.Message);
     }
 
@@ -177,7 +179,6 @@ export class GossipModule extends BotModule {
 
             this.notifyMap.set(message.Channel, true);
         }
-
 
         let sentList = await message.Channel.sendText(nonSensitiveText);
 

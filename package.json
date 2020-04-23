@@ -18,6 +18,6 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "@akaiv/core": "^1.6.0"
+    "@akaiv/core": "^1.8.2"
   }
 }

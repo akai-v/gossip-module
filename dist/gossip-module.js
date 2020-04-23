@@ -38,6 +38,8 @@ class GossipModule extends core_1.BotModule {
     async unloadModule() {
     }
     async onMessage(e) {
+        if (e.IsCommand)
+            return;
         await this.processGossip(e.Message);
     }
     async processGossip(message, processClient = false, multiplier = 1) {
