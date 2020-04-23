@@ -16,5 +16,5 @@ export declare class GossipModule extends BotModule {
     protected loadModule(): Promise<void>;
     protected unloadModule(): Promise<void>;
     protected onMessage(e: BotMessageEvent): Promise<void>;
-    protected processGossip(message: UserMessage, processClient?: boolean, multiplier?: number): Promise<void>;
+    protected processGossip(message: UserMessage, multiplier?: number): Promise<void>;
 }

@@ -69,13 +69,13 @@ export class GossipModule extends BotModule {
     }
 
     protected async onMessage(e: BotMessageEvent) {
-        if (e.IsCommand) return;
+        if (e.IsCommand || e.Message.Sender.IsClientUser) return;
         
         await this.processGossip(e.Message);
     }
 
-    protected async processGossip(message: UserMessage, processClient: boolean = false, multiplier: number = 1) {
-        if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message))) return;
+    protected async processGossip(message: UserMessage, multiplier: number = 1) {
+        if (!await (this.studyManager.canStudy(message))) return;
 
         let text = message.Text;
         let lastMessage = this.lastMessageMap.get(message.Channel);
@@ -184,7 +184,7 @@ export class GossipModule extends BotModule {
 
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text) continue;
-            await this.processGossip(sentMessage, true, 1.1);
+            await this.processGossip(sentMessage, 1.1);
             break;
         }
     }

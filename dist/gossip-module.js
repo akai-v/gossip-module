@@ -38,12 +38,12 @@ class GossipModule extends core_1.BotModule {
     async unloadModule() {
     }
     async onMessage(e) {
-        if (e.IsCommand)
+        if (e.IsCommand || e.Message.Sender.IsClientUser)
             return;
         await this.processGossip(e.Message);
     }
-    async processGossip(message, processClient = false, multiplier = 1) {
-        if (!processClient && message.Sender.IsClientUser || !await (this.studyManager.canStudy(message)))
+    async processGossip(message, multiplier = 1) {
+        if (!await (this.studyManager.canStudy(message)))
             return;
         let text = message.Text;
         let lastMessage = this.lastMessageMap.get(message.Channel);
@@ -122,7 +122,7 @@ class GossipModule extends core_1.BotModule {
         for (let sentMessage of sentList) {
             if (sentMessage.AttachmentList.length > 0 || sentMessage.Text !== targetChatKey.text)
                 continue;
-            await this.processGossip(sentMessage, true, 1.1);
+            await this.processGossip(sentMessage, 1.1);
             break;
         }
     }
