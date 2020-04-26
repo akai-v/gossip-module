@@ -77,7 +77,7 @@ export class GossipModule extends BotModule {
     protected async processGossip(message: UserMessage, multiplier: number = 1) {
         if (!await (this.studyManager.canStudy(message))) return;
 
-        let text = message.Text;
+        let text = message.Text.trim();
         let lastMessage = this.lastMessageMap.get(message.Channel);
         this.lastMessageMap.set(message.Channel, message);
 
@@ -86,7 +86,7 @@ export class GossipModule extends BotModule {
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
 
-        let lastText = lastMessage.Text;
+        let lastText = lastMessage.Text.trim();
 
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
@@ -100,7 +100,7 @@ export class GossipModule extends BotModule {
         }
 
         
-        if (lastMessage.Text !== message.Text || lastMessage.Text === message.Text && Math.random() < 0.3) {
+        if (lastText !== text || Math.random() < 0.1) {
             let newLastChatRefCount: number = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
             await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
         }

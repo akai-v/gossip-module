@@ -45,14 +45,14 @@ class GossipModule extends core_1.BotModule {
     async processGossip(message, multiplier = 1) {
         if (!await (this.studyManager.canStudy(message)))
             return;
-        let text = message.Text;
+        let text = message.Text.trim();
         let lastMessage = this.lastMessageMap.get(message.Channel);
         this.lastMessageMap.set(message.Channel, message);
         if (!lastMessage)
             return;
         let total = await this.studyManager.getTotalMessage();
         await this.studyManager.setTotalMessage(total + 1);
-        let lastText = lastMessage.Text;
+        let lastText = lastMessage.Text.trim();
         let textHash = this.studyManager.transformTextToKey(text);
         let lastTextHash = this.studyManager.transformTextToKey(lastText);
         let random = Crypto.randomBytes(2).readUInt16LE(0);
@@ -60,7 +60,7 @@ class GossipModule extends core_1.BotModule {
         if (!lastChatKey) {
             this.studyManager.setChatKey(this.studyManager.createNewChatKey(lastText));
         }
-        if (lastMessage.Text !== message.Text || lastMessage.Text === message.Text && Math.random() < 0.3) {
+        if (lastText !== text || Math.random() < 0.1) {
             let newLastChatRefCount = await this.studyManager.getChatKeyHashConnectionRefCount(lastTextHash, textHash) + 1;
             await this.studyManager.updateChatKeyHashConnectionRefCount(lastTextHash, textHash, newLastChatRefCount);
         }
